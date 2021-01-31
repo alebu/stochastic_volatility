@@ -1,0 +1,533 @@
+---
+title: "The Binomial Model"
+header-includes:
+   - \usepackage{bbm}
+output: 
+  pdf_document:
+    number_sections: true
+---
+
+# Introductory definitions, assumptions and notation
+
+A **market** is any setting in where we can exchange one or more **asset** 
+through time. In order to define a model of the market, hence, we need to 
+specify how we model time, what assets are available to exchange, and how they 
+change values through time.
+
+When modelling markets in mathematical finance, we usually make a set of basic
+assumptions:
+
+* **Not moving the market**: our actions (short or sell assets) do not
+affect the price of the asset. This is obviously false in absolute sense: demand
+affects the market price. However, if we are dealing with relatively small 
+quantities, the effect is usually negligible
+
+* **Liquidity**: at any point in time we can exchange any amount of any asset at 
+its current market price. A market that satisfies this assumptions is called a 
+**liquid** market.
+
+* **Shorting**: we can sell assets that we do not hold, i.e., we can hold 
+negative quantities of assets. In practice, this is usually allowed.
+
+* **Fractional Quantities**: we can sell or bay fractional quantities of assets.
+This is usually not allowed, but when dealing with large quantities of money, the 
+error is usually negligible.
+
+* **No transaction costs (a.k.a., no frictions assumption)**: we can buy or sell 
+assets without costs. This is usually not the case, as we have to kind of costs. 
+First, usually brokers ask some money to execute transactions for us. But also, 
+usually sell prices are lower than buy prices (this is called the bid-offer 
+spread). The size of the spread is correlated with the liquidity of the market. 
+Indeed, assuming a **liquid market** implies assuming no bid-offer spread.
+
+Furthermore, in the Binomial Model, we will use discrete time: $t = 0, 1, 2, ..., T$.
+
+## Assets
+
+### Cash
+
+Cash is a riskless asset, i.e., its value changes through time in a 
+deterministic way. In particular, let r > 0 be a deterministic constant, the 
+**interest rate**. If we put $x$ cash in the bank at time zero, its value at 
+time t will be $x(1 + r)^t$. The same formula applies when $x$ is a negative 
+value: in that case we would be borrowing, rather than depositing (that is, 
+lending) cash.
+  
+### Stock
+
+With stock we mean a collection of shares, i.e., proportions of rights of 
+ownership of a company. As for cash, we allow ourselves to own negative amount 
+of stock. However we assume that we don't pay any interest for borrowing it. 
+  
+Stock, as opposed to cash, is not riskless: it changes its value through time 
+randomly. Hence, we model it as the **stochastic process**: 
+
+$$
+(S_t)_{t = 0}^{\infty}
+$$
+
+But how shall we define such process? Stock prices cannot take negative values, 
+so a multiplicative process seems a good model. 
+
+Let $u, d, s > 0$ with $u > d$. At time zero, it costs $S_0 = s$ cash to buy one 
+unit of stock. After that, in each time step, the value of our stock is 
+multiplied by a random variable $Z$:
+
+
+$$
+S_t =  \begin{cases}
+      s & \text{if} \ t = 0 \\
+      Z_tS_{t -1} & \text{otherwise}
+    \end{cases}  
+$$
+
+
+Where the random variable $Z_t$ has distribution:
+
+$$
+\mathbb{P}[Z_t = u] = p_u
+$$ 
+$$
+\mathbb{P}[Z_t = d] = p_d
+$$
+
+For each time step, we'll assue the $Z_t$'s will be independent.
+  
+### Contingent claims
+
+Finally, A **contingent claim** is any random variable of the form:
+
+$$
+X = \Phi(S_t)
+$$
+
+where $\Phi: \mathbb{R} \rightarrow \mathbb{R}$ is a deterministic function. 
+We can use contingent claim to model an additional kind of assets available on 
+the market: **derivatives**, i.e. assets whose value depends on the value of the 
+underlying stock.
+
+## Portfolios and Value Processes
+
+As we will model the decisions of market participants on what to trade at each 
+time point, we have to also model what information is available to the them 
+through time. We'll model it using a **filtration**:
+
+$$
+\mathcal{F}_t = \sigma(Z_1, Z_2, ..., Z_t)
+$$
+
+It is easy to see that $\mathcal{F}_t$ is the **generated filtration** of $(Z_T)$.
+That is, $\mathcal{F}_t$ contains information around changes in stock prices up 
+to and including time $t$. So, we have:
+
+$$
+Z_t \in m \mathcal{F}_t \Rightarrow S_t \in m \mathcal{F}_t
+$$
+
+But:
+
+$$
+Z_{t + 1} \notin m \mathcal{F}_{t} \Rightarrow S_{t + 1} \notin m \mathcal{F}_t
+$$
+
+A **portfolio strategy** is a stochastic process:
+
+$$
+h_t = (x_t, y_t) \in \mathcal{F}_{t - 1}
+$$
+
+where $x_t$ is the amount of cash held during the transition $t - 1 \rightarrow t$, 
+and $y_t$ is the units of stock held during the transition $t - 1 \rightarrow t$. 
+
+Note that we defined portfolio stategies in terms of their composition of cash 
+and stock, without allowing ourselves to hold contingent claims. This is a 
+restrictive assumption, but useful to simplify the notation giving the argument
+that we will use to derive the price of the contingent claims (dee the 
+replication argument for pricing).
+
+Note also that how we defined the measurability of the portfolio strategy makes 
+sense: we make decisions on what portfolio to hold durign the transition 
+$t - 1 \rightarrow t$ using the information around how prices changed up to time 
+$t - 1$.
+
+The **value process** or **price process** of the portfolio strategy $(h_t)_{t = 1}^T$ 
+is the process $(V^t)$ given by:
+  
+  
+$$
+V^h_0 = x_1 + y_1S_0
+$$
+$$
+V^h_t = x_t(1 + r) + y_tS_t
+$$
+
+Check this last definition, shouldn't it be $x_{t - 1}(1 + r)$?
+
+Also, to simplify the treatment, let's define the value of the contingent claim
+$\phi$ at time t as $V_t^\phi$. We can imagine this as being the value process of
+a portfolio strategy composed only by the contingent claim $\phi$.
+
+In general, we'll be interested in portfolio strategies that require an initial
+investment at time 0, but after that any changes in cash/stock held will pay for
+themselves. Such a portfolio is called **self-financing**. More formally, a 
+portfolio strategy $(h_t)$ is **self-financing** if:
+
+$$
+V^h_t = x_{t + 1} + y_{t + 1}S_t
+$$
+
+Let's examine this definition. What we are asking is that, at time t, we can compose
+the portfolio held during the transition $t \rightarrow t + 1$ (i.e., $x_{t + 1}$
+cash and $y_{t + 1}$ stock) just by using the value of the portfolio held during 
+the previous transition evaluated at time $t$.
+
+![alt text here](transition.png)
+
+# Arbitrage
+
+When modelling a market, we want to encode in the structure of the model the 
+fact that "there ain't no such thing as a free lunch". Basically what that means
+is that there aren't ways, for investors, of making money without risking any 
+capital. We can formalise the idea: we say that a portfolio strategy $(h_t)$ is 
+an **arbitrage possibility** if it is **self-financing** and satisfies:
+
+$$
+V_0^h = 0
+$$
+$$
+\mathbb{P}[V_T^h \geq 0] = 1
+$$
+$$
+\mathbb{P}[V_T^h > 0] > 0
+$$
+
+## Monotonicity Theorem [Joshi]
+
+If we have two portfolio strategies $h_t$ and $k_t$:
+
+$$
+\mathbb{P}[V_T^h \geq V_T^k] = 1 \Rightarrow \mathbb{P}[V_t^h \geq V_t^k] = 1 \ \ \forall \ \ t < T
+$$
+Furthermore, if:
+
+$$
+\mathbb{P}[V_T^h > V_T^k] > 0
+$$
+Then:
+
+$$
+\mathbb{P}[V_t^h > V_t^k] = 1 \ \ \forall \ \ t < T
+$$
+The proof is in [Joshi], page 27.
+
+# Three pricing arguments
+
+Now that we defined our model of the market and set some notation, we can go start
+trying to solve our problem, that is, the pricing of derivatives. Note that, in 
+the model we set up, this means finding the value of $\Phi(S_0)$, i.e. $V_0^\phi$.
+
+## Replication
+
+Note that a corollary of the monotonicity theorem is that:
+
+$$
+\mathbb{P}[V_T^h = V_T^k] = 1 \Rightarrow \mathbb{P}[V_t^h = V_t^k] = 1 \ \ \forall \ \ t < T
+$$
+Hence, if we can find a portfolio $h_t$ whose value at time $T$ is the same as 
+the value of a portfolio composed only by the contingent claim, then their value
+must also be equal at time zero, i.e.:
+
+$$
+\mathbb{P}[V_T^h = V_T^\phi] = 1 \Rightarrow \mathbb{P}[V_0^h = V_0^\phi] = 1 \ \ \forall \ \ t < T
+$$
+
+
+So, if we can find such a portfolio, then we are done: the value of that portfolio
+at time zero is the only price for the derivative that guarantees no arbitrage.
+This is the argument that we will use in detail to derive the price for 
+contingent claims. We now understand why we chose to model porfolio strategies
+as allocations of only stock and cash: we will use such portfolios to replicate
+the value of the contingent claim.
+
+## Hedging
+
+Alternatively, let's imagine that we have sold a **derivative**, i.e., we are 
+short on the contingent claim. What we can try to do is build a portfolio strategy
+$h_t$ such that $h_T - \phi(S_T)$ has the same value, in T, in every possible state
+of the world. That is, we can try to hedge our risk, replicating the deterministic
+behaviour of cash using stock and the derivative. 
+
+## Risk-neutrality
+
+We'll see that the two previous arguments lead to the same price for the 
+contingent claim. Furthermore, we'll be able to express that prices as the 
+expectation under a particular probability measure, $\mathbb{Q}$. Under this
+measure:
+
+$$
+(1 + r)S_0 = \mathbb{E}^{\mathbb{Q}}[S_1]
+$$
+That is, the average rate of growth of the stock is the same as the rate of 
+growth of cash. Obviously this different from the real world, where investors
+require a higher growth for stock in order to assume the risk associated with it.
+
+# The one-period market
+
+In the one-period market model, time takes two values: 0 and 1. The market model
+that we defined for the general case becomes a lot simpler. Since there is only
+one time transition, we don't need a stochastic process to model portfolio 
+strategies. Instead, we can model them as $h = (x, y) \in \mathbb{R}^2$, where 
+$x$ and $y$ are the amounts of cash and stock that we hold during the transition,
+that is, that we compose at time zero. 
+
+Hence, the value process of the portfolio at time zero is:
+
+$$
+V_0^h = x + yS_0 = x + ys
+$$
+At time $t = 1$:
+
+* the $x$ units of cash that we held at time 0 become worth $x(1 + r)$
+* a single unit of stock changes value to:
+
+$$
+S_1 =  \begin{cases}
+      su & \text{with probability}\\
+      sd & \text{with probability}
+    \end{cases}  
+$$
+
+Hence, the value process of the portfolio at time zero is:
+
+$$
+V_1^h = x(1 + r) + yS_1
+$$
+In this simplified setting, the value process at time zero is a real number, and
+at time 1 is a random variable.
+
+## Arbitrage in the one-period market
+
+Here we want to find out for what set of parameters our model is arbitrage free.
+We have that the one-period market is arbitrage free if and only if:
+
+$$
+d < 1 + r < u
+$$
+
+Proof in [Freeman]
+
+## Replication in the one-period market
+
+Let's price a contingent claim, in the one-period market, using the replication
+argument. We want to find a portfolio $h(x, y)$ such that:
+
+$$
+\mathbb{P}[V_1^h = \phi(S_1)] = 1
+$$
+That is, we want our portfolio to have the same value as the contingent claim at
+time 1 in every possible state of the world:
+
+$$
+V_1^h = \begin{cases}
+      \phi(su), & \text{if}\ S_1 = su\\
+      \phi(sd), & \text{if}\ S_1 = sd\\
+    \end{cases}
+$$
+Hence, we want:
+
+$$
+\begin{cases}
+      x(1 + r) + ysu = \phi(su) \\
+      x(1 + r) + ysd = \phi(sd) \\
+    \end{cases}
+$$
+
+This is a pair of linear equations that we can easily solve:
+
+$$
+\begin{pmatrix}
+1 + r & su \\
+1 + r & sd \\
+\end{pmatrix}
+\begin{pmatrix}
+x \\
+y \\
+\end{pmatrix} = 
+\begin{pmatrix}
+\phi(su) \\
+\phi(sd) \\
+\end{pmatrix}
+$$
+The system of linear equations has a unique solution if and only if its 
+determinant is not zero, that is $(1 + r)sd - (1 + r)su \neq 0 \Rightarrow u \neq d$.
+Given that a consequence of the no-arbitrage assumption is that $d < 0$, we have
+that our market is **complete**, i.e., we can price any continget claim.
+
+And we can solve the system:
+
+$$
+\begin{pmatrix}
+x \\
+y \\
+\end{pmatrix} = 
+\frac{1}{(1 + r)sd - (1 + r)su}
+\begin{pmatrix}
+\phi(su)sd - \phi(sd)su \\
+(1 + r)\phi(sd) - (1 + r)\phi(su) \\
+\end{pmatrix} 
+$$
+
+that is:
+
+$$
+x = \frac{1}{(1 + r)} \frac{\phi(sd)u - \phi(su)d }{u - d}
+$$
+$$
+y = \frac{\phi(su) - \phi(sd) }{su - sd}
+$$
+So, we found our replicating portfolio. The latter formula is known as *delta 
+hedging formula*
+
+As mentioned before, as a consequence of the monotonicity theorem, we have that 
+the value of this portfolio at time zero must be equal to the value (and hence, 
+the price) of the contingent claim:
+
+$$
+V^\phi_0 = V^h_0 = x + sy = \\
+$$
+$$
+= \frac{1}{(1 + r)} \frac{\phi(sd)u - \phi(su)d }{u - d} + \frac{\phi(su) - \phi(sd) }{u - d} = \\
+$$
+$$
+= \frac{1}{(1 + r)} \left(\frac{u - (1 + r)}{u - d} \phi(sd) + \frac{(1 + r) - d}{u - d} \phi(su) \right )
+$$
+
+
+
+By defining:
+
+$$
+q_d = \frac{u - (1 + r)}{u - d}, \ q_u = \frac{(1 + r) - d}{u - d}
+$$
+We have:
+
+$$
+V^\phi_0 = V^h_0 = \frac{1}{(1 + r)} \left( q_d\phi(sd) + q_u \phi(su) \right )
+$$
+
+we can interpret $q_d$ and $q_u$ as the risk neutral probabilities we introduced
+before, that is $\mathbb{Q}[S_1 = su] = q_u$ and $\mathbb{Q}[S_1 = sd] = q_d$.
+
+It follows:
+
+$$
+V^\phi_0 = V^h_0 = \frac{1}{(1 + r)} \mathbb{E}^{\mathbb{Q}}[S_1]
+$$
+
+This is known as the $risk-neutral pricing formula$. As we can see, the price of
+the derivative does not depend on the actual probabilities. We can note that even
+though we defined, in our model, actual probabilities of up and down moves, these
+do not affect the price. This is because our model provided us with a method to
+perfectly hedge our portfolio, and hence to make the outcome deterministic  (at 
+least in the Small World [McElreath]). Hence, the real-world probabilities do 
+not need to affect us.
+
+# The multi-period market
+
+Let's now extend our model and allow multiple time steps t = $0, 1, 2, ..., T$.
+
+## Arbitrage in the one-period market
+
+As for the one-period market, we want to find out for what set of parameters our
+model is arbitrage free. We have that the multi-period market is arbitrage free 
+if and only if:
+
+$$
+d < 1 + r < u
+$$
+
+Proof??
+
+Furthermore, as in the one-period market, we have that the multi-period market
+is complete if and only if is abritrage free.
+
+Proof??
+
+## Replication in the multi-period market
+
+We say that a portfolio strategy $(h_t)_{t = 1}^T$ is a **replicating portfolio**
+or **hedging strategy** for the contingent claim $\Phi(S_T)$ if:
+
+$$
+V_T^h = \Phi(S_T)
+$$
+
+As in the one-period market, we can use the monotonicity theorem to state that if
+a contingent claim $\Phi(S_T)$ has a replicating portfolio $h = (h_t)_{t = 1}^T$,
+then the price of such contingent claim at time zero must be equal to the value
+of $h$ at time zero, that is, $V_0^h$.
+
+# The asset prices model implied by the Binomial Model
+
+Now we can think about what are the statistical properties of the model that 
+we defined for our model of asset prices $(S_t)$.
+
+## Martingale Property
+
+If $d < 1 + r < u$, then, under the probability measure $\mathbb{Q}$, the 
+stochastic process:
+
+$$
+M_t = \frac{1}{(1 + r)^t}S_t
+$$
+is a Martingale w.r.t. the filtration $(\mathcal{F}_{t})$.
+
+**Proof**
+
+$$
+\mathbb{E}^{\mathbb{Q}}[M_{t + 1} | \mathcal{F}_t] = \mathbb{E}^{\mathbb{Q}}[M_{t + 1} \mathbbm{1}_{\{Z_{t + 1} = u\}} +  M_{t + 1} \mathbbm{1}_{\{Z_{t + 1} = d\}}| \mathcal{F}_t] 
+$$
+Now, we know that:
+
+$$
+M_{t + 1} = \frac{S_{t + 1}}{(1 + r)^{t + 1}}
+= \frac{S_{t}Z_{t + 1}}{(1 + r)^{t + 1}} = \begin{cases}
+      \frac{uS_t}{(1 + r)^{t + 1}} \ \ \text{if} \  \ Z_{t + 1} = u \\
+      \frac{dS_t}{(1 + r)^{t + 1}} \ \ \text{if} \  \ Z_{t + 1} = d \\
+\end{cases}
+$$
+Hence:
+$$
+\mathbb{E}^{\mathbb{Q}}[M_{t + 1} | \mathcal{F}_t] = 
+\mathbb{E}^{\mathbb{Q}} \left [ \frac{uS_t}{(1 + r)^{t + 1}} \mathbbm{1}_{\{Z_{t + 1} = u\}} +   \frac{dS_t}{(1 + r)^{t + 1}} \mathbbm{1}_{\{Z_{t + 1} = d\}} \middle| \mathcal{F}_t \right ]
+$$
+
+For Linearity of Conditional Expectation:
+
+$$
+\mathbb{E}^{\mathbb{Q}}[M_{t + 1} | \mathcal{F}_t] = u\mathbb{E}^{\mathbb{Q}} \left[ \frac{S_t}{(1 + r)^{t + 1}} \mathbbm{1}_{\{Z_{t + 1} = u\}} \middle| \mathcal{F}_t \right ] + d\mathbb{E}^{\mathbb{Q}} \left[ \frac{S_t}{(1 + r)^{t + 1}} \mathbbm{1}_{\{Z_{t + 1} = d\}} \middle | \mathcal{F}_t \right ]
+$$
+We have that $S_t \in m\mathcal{F}_t$, so we can use the *Taking out what is known*
+property of Conditional Expectation:
+
+$$
+\mathbb{E}^{\mathbb{Q}}[M_{t + 1} | \mathcal{F}_t] = \frac{S_t}{(1 + r)^{t + 1}} \left( u\mathbb{E}^{\mathbb{Q}} \left[  \mathbbm{1}_{\{Z_{t + 1} = u\}} \middle| \mathcal{F}_t \right ] + d\mathbb{E}^{\mathbb{Q}} \left[ \mathbbm{1}_{\{Z_{t + 1} = d\}} \middle | \mathcal{F}_t \right ] \right)
+$$
+We also know that $Z_t$ is independent of $\mathcal{F}_t$, hence:
+
+$$
+\mathbb{E}^{\mathbb{Q}}[M_{t + 1} | \mathcal{F}_t] = \frac{S_t}{(1 + r)^{t + 1}} \left( u\mathbb{E}^{\mathbb{Q}} \left[  \mathbbm{1}_{\{Z_{t + 1} = u\}} \right ] + d\mathbb{E}^{\mathbb{Q}} \left[ \mathbbm{1}_{\{Z_{t + 1} = d\}} \right ] \right)
+$$
+And, since for an indicator function $\mathbb{E}[\mathbbm{1}_A] = \mathbb{P}[A]$:
+
+$$
+\mathbb{E}^{\mathbb{Q}}[M_{t + 1} | \mathcal{F}_t] = \frac{S_t}{(1 + r)^{t + 1}} \left( u q_u + d q_d  \right)
+$$
+
+Finally, noting that $u q_u + d q_d = (1 + r)$:
+
+$$
+\mathbb{E}^{\mathbb{Q}}[M_{t + 1} | \mathcal{F}_t] = \frac{S_t}{(1 + r)^{t}} = M_t
+$$
+
+# Implementation
