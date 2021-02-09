@@ -4,6 +4,8 @@ header-includes:
    - \usepackage{bbm}
 output: 
   pdf_document:
+    toc: true
+    toc_depth: 1
     number_sections: true
 ---
 
@@ -116,9 +118,9 @@ $$
 \mathcal{F}_t = \sigma(Z_1, Z_2, ..., Z_t)
 $$
 
-It is easy to see that $\mathcal{F}_t$ is the **generated filtration** of $(Z_T)$.
-That is, $\mathcal{F}_t$ contains information around changes in stock prices up 
-to and including time $t$. So, we have:
+i.e. $\mathcal{F}_t$ is the **generated filtration** of $(Z_T)$. That is, 
+$\mathcal{F}_t$ contains information around changes in stock prices up to and 
+including time $t$. So, we have:
 
 $$
 Z_t \in m \mathcal{F}_t \Rightarrow S_t \in m \mathcal{F}_t
@@ -142,11 +144,11 @@ and $y_t$ is the units of stock held during the transition $t - 1 \rightarrow t$
 Note that we defined portfolio stategies in terms of their composition of cash 
 and stock, without allowing ourselves to hold contingent claims. This is a 
 restrictive assumption, but useful to simplify the notation giving the argument
-that we will use to derive the price of the contingent claims (dee the 
+that we will use to derive the price of the contingent claims (see the 
 replication argument for pricing).
 
 Note also that how we defined the measurability of the portfolio strategy makes 
-sense: we make decisions on what portfolio to hold durign the transition 
+sense: we make decisions on what portfolio to hold during the transition 
 $t - 1 \rightarrow t$ using the information around how prices changed up to time 
 $t - 1$.
 
@@ -161,11 +163,15 @@ $$
 V^h_t = x_t(1 + r) + y_tS_t
 $$
 
-Check this last definition, shouldn't it be $x_{t - 1}(1 + r)$?
+This makes sense:
 
-Also, to simplify the treatment, let's define the value of the contingent claim
-$\phi$ at time t as $V_t^\phi$. We can imagine this as being the value process of
-a portfolio strategy composed only by the contingent claim $\phi$.
+* as $x_t$ is the amount of cash held during the transition $t - 1 \rightarrow t$,
+it's "deposited" at time $t - 1$, and, at time $t$, it grows thanks to the interest
+rate
+
+* as $y_t$ is the amount of stock held during the transition $t - 1 \rightarrow t$,
+its value at time t is just the amount of stock multiplied by the stock price at
+time t
 
 In general, we'll be interested in portfolio strategies that require an initial
 investment at time 0, but after that any changes in cash/stock held will pay for
@@ -181,7 +187,7 @@ the portfolio held during the transition $t \rightarrow t + 1$ (i.e., $x_{t + 1}
 cash and $y_{t + 1}$ stock) just by using the value of the portfolio held during 
 the previous transition evaluated at time $t$.
 
-![alt text here](transition.png)
+![alt text here](img/transition.png)
 
 # Arbitrage
 
@@ -253,32 +259,44 @@ the value of the contingent claim.
 
 Alternatively, let's imagine that we have sold a **derivative**, i.e., we are 
 short on the contingent claim. What we can try to do is build a portfolio strategy
-$h_t$ such that $h_T - \phi(S_T)$ has the same value, in T, in every possible state
+$h_t$ such that $h_T - \phi(S_T)$ (#todo rewrite with value processes) has the same value, in T, in every possible state
 of the world. That is, we can try to hedge our risk, replicating the deterministic
 behaviour of cash using stock and the derivative. 
 
 ## Risk-neutrality
 
 We'll see that the two previous arguments lead to the same price for the 
-contingent claim. Furthermore, we'll be able to express that prices as the 
-expectation under a particular probability measure, $\mathbb{Q}$. Under this
-measure:
+contingent claim. Furthermore, we'll be able to express this price as the 
+expected value of the contingent claim under a particular probability measure, 
+$\mathbb{Q}$. Under this measure:
 
 $$
 (1 + r)S_0 = \mathbb{E}^{\mathbb{Q}}[S_1]
 $$
 That is, the average rate of growth of the stock is the same as the rate of 
-growth of cash. Obviously this different from the real world, where investors
-require a higher growth for stock in order to assume the risk associated with it.
+growth of cash. 
+
+This different from the real world, where investors require a higher growth for 
+stock in order to assume the risk associated with it. Indeed, one of the key 
+principles of finance is that there is a strong relationship between risk and 
+return: investors require that a risky asset as a higher expected return than a 
+riskless one.
+
+However, the principle only holds for unavoidable risk, that is, risk that 
+cannot be hedged or diversified. When Black, Scholes and Merton presented their 
+argument for derivative evaluation, they gave the investors a tool to hedge 
+their risk: Delta Hedging. Hence, the risk associated with stock was no longer 
+unavoidable: one could build a portfolio, using stock and options, whose value 
+in the future was (under particular assumptions) deterministic.
+
 
 # The one-period market
 
-In the one-period market model, time takes two values: 0 and 1. The market model
-that we defined for the general case becomes a lot simpler. Since there is only
-one time transition, we don't need a stochastic process to model portfolio 
-strategies. Instead, we can model them as $h = (x, y) \in \mathbb{R}^2$, where 
-$x$ and $y$ are the amounts of cash and stock that we hold during the transition,
-that is, that we compose at time zero. 
+Let's start our analysis using a very simple version of the model: on in which
+we only have two time points. Since there is only one time transition, we don't 
+need a stochastic process to model portfolio strategies. Instead, we can model 
+them as $h = (x, y) \in \mathbb{R}^2$, where $x$ and $y$ are the amounts of cash 
+and stock that we hold during the transition, that is, that we compose at time zero. 
 
 Hence, the value process of the portfolio at time zero is:
 
@@ -292,12 +310,12 @@ At time $t = 1$:
 
 $$
 S_1 =  \begin{cases}
-      su & \text{with probability}\\
-      sd & \text{with probability}
+      su & \text{with probability } p_u \\
+      sd & \text{with probability } p_d
     \end{cases}  
 $$
 
-Hence, the value process of the portfolio at time zero is:
+Hence, the value process of the portfolio at time one is:
 
 $$
 V_1^h = x(1 + r) + yS_1
@@ -389,14 +407,11 @@ So, we found our replicating portfolio. The latter formula is known as *delta
 hedging formula*
 
 As mentioned before, as a consequence of the monotonicity theorem, we have that 
-the value of this portfolio at time zero must be equal to the value (and hence, 
-the price) of the contingent claim:
+the value of this portfolio at time zero must be equal to the value  of the 
+contingent claim. We can easily find such value:
 
 $$
-V^\phi_0 = V^h_0 = x + sy = \\
-$$
-$$
-= \frac{1}{(1 + r)} \frac{\phi(sd)u - \phi(su)d }{u - d} + \frac{\phi(su) - \phi(sd) }{u - d} = \\
+V^h_0 = x + sy = \frac{1}{(1 + r)} \frac{\phi(sd)u - \phi(su)d }{u - d} + \frac{\phi(su) - \phi(sd) }{u - d} =
 $$
 $$
 = \frac{1}{(1 + r)} \left(\frac{u - (1 + r)}{u - d} \phi(sd) + \frac{(1 + r) - d}{u - d} \phi(su) \right )
@@ -424,8 +439,7 @@ $$
 V^\phi_0 = V^h_0 = \frac{1}{(1 + r)} \mathbb{E}^{\mathbb{Q}}[S_1]
 $$
 
-This is known as the $risk-neutral pricing formula$. As we can see, the price of
-the derivative does not depend on the actual probabilities. We can note that even
+This is known as the **risk-neutral pricing formula**.   We can note that even
 though we defined, in our model, actual probabilities of up and down moves, these
 do not affect the price. This is because our model provided us with a method to
 perfectly hedge our portfolio, and hence to make the outcome deterministic  (at 
@@ -480,6 +494,7 @@ stochastic process:
 $$
 M_t = \frac{1}{(1 + r)^t}S_t
 $$
+
 is a Martingale w.r.t. the filtration $(\mathcal{F}_{t})$.
 
 **Proof**
@@ -487,6 +502,7 @@ is a Martingale w.r.t. the filtration $(\mathcal{F}_{t})$.
 $$
 \mathbb{E}^{\mathbb{Q}}[M_{t + 1} | \mathcal{F}_t] = \mathbb{E}^{\mathbb{Q}}[M_{t + 1} \mathbbm{1}_{\{Z_{t + 1} = u\}} +  M_{t + 1} \mathbbm{1}_{\{Z_{t + 1} = d\}}| \mathcal{F}_t] 
 $$
+
 Now, we know that:
 
 $$
