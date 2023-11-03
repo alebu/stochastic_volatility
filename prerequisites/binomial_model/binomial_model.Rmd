@@ -187,8 +187,6 @@ the portfolio held during the transition $t \rightarrow t + 1$ (i.e., $x_{t + 1}
 cash and $y_{t + 1}$ stock) just by using the value of the portfolio held during 
 the previous transition evaluated at time $t$.
 
-![alt text here](img/transition.png)
-
 # Arbitrage
 
 When modelling a market, we want to encode in the structure of the model the 
