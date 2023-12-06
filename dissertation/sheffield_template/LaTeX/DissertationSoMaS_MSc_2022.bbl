@@ -1,0 +1,27 @@
+\begin{thebibliography}{}
+
+\bibitem[Dellaportas et~al., 2000]{dellas}
+Dellaportas, P., Foster, J.~J., and Ntzoufras, I. (2000).
+\newblock Bayesian variable selection using the {G}ibbs sampling.
+\newblock In D.~K.~Dey, S. K.~G. and Mallick, B.~K., editors, {\em Generalized
+  linear models: a {B}ayesian perspective}, pages 273--286. Marcel Dekker, New
+  York.
+
+\bibitem[Fristedt and Gray, 1996]{Fristedt}
+Fristedt, B.~E. and Gray, L.~F. (1996).
+\newblock {\em A modern approach to probability theory}.
+\newblock Birkh\"{a}user Boston.
+
+\bibitem[Lambert et~al., 2005]{lambert}
+Lambert, P.~C., Sutton, A.~J., Burton, P.~R., Abrams, K.~R., and Jones, D.~R.
+  (2005).
+\newblock How vague is vague? {A} simulation study of the impact of the use of
+  vague prior distributions in {MCMC} using {WinBUGS}.
+\newblock {\em Statistics in Medicine}, 24:2401--2428.
+
+\bibitem[Williams, 1991]{Williams}
+Williams, D. (1991).
+\newblock {\em Probability with Martingales}.
+\newblock Cambridge University Press.
+
+\end{thebibliography}

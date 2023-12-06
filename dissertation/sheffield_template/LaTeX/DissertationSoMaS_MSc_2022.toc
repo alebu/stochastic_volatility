@@ -1,0 +1,12 @@
+\contentsline {chapter}{Acknowledgements}{i}{chapter*.2}
+\contentsline {chapter}{Lay Summary of the Dissertation}{iii}{chapter*.3}
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
+\contentsline {chapter}{\numberline {2}Some reminders}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}A key theorem}{3}{section.2.1}
+\contentsline {section}{\numberline {2.2}Another section}{4}{section.2.2}
+\contentsline {chapter}{\numberline {A}Review of probability calculus}{7}{appendix.A}
+\contentsline {section}{\numberline {A.1}Functions of random variables}{7}{section.A.1}
+\contentsline {section}{\numberline {A.2}Schwarz Inequality}{7}{section.A.2}
+\contentsline {chapter}{\numberline {B}Some technical proofs}{9}{appendix.B}
+\contentsline {section}{\numberline {B.1}Proof 1}{9}{section.B.1}
+\contentsline {chapter}{\numberline {C}Research Ethics Approval}{11}{appendix.C}

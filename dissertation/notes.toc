@@ -1,0 +1,6 @@
+\contentsline {chapter}{\numberline {1}The need for extending Black-Scholes-Merton}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Notation and preliminary results}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Stylized Facts}{1}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Volatility Smiles}{1}{subsection.1.2.1}%
+\contentsline {section}{\numberline {1.3}Importance for Hedging}{1}{section.1.3}%
+\contentsline {subsubsection}{Crashofobia}{1}{section*.2}%
